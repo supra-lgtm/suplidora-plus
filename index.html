@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuplidoraPlus - Redirigiendo...</title>
+  <!-- Tailwind CSS para el estado de carga -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SDK de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-slate-50 h-screen flex items-center justify-center">
+
+  <div class="text-center">
+    <!-- Spinner de carga estilo Material Design -->
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#1A56DB] mb-4"></div>
+    <p class="text-slate-600 font-medium animate-pulse">Cargando SuplidoraPlus...</p>
+  </div>
+
+  <script>
+    // Configuración de Supabase (Credenciales del Plan Maestro)
+        const SUPABASE_URL = 'https://qrxoayhpcwzohmylvpkr.supabase.co';
+        
+        // NOTA CRÍTICA: La clave que proporcionaste (sb_publishable_...) es de Stripe.
+        // DEBES usar la "anon public key" de Supabase (empieza por eyJ...)
+        const SUPABASE_ANON_KEY = 'TU_SUPABASE_ANON_KEY_AQUI'; 
+
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkSessionAndRedirect() {
+            try {
+                // Verificar si existe una sesión activa en el navegador
+                const { data: { session }, error } = await _supabase.auth.getSession();
+
+                if (error) throw error;
+
+                if (session) {
+                    // Si hay sesión, va directo al panel principal
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Si no hay sesión, va a la pantalla de acceso
+                    window.location.href = 'login.html';
+                }
+            } catch (err) {
+                console.error("Error de redirección:", err);
+                // En caso de error técnico, enviamos al login por seguridad
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Ejecutar la verificación al cargar
+        checkSessionAndRedirect();
+  </script>
+</body>
+
+</html>
